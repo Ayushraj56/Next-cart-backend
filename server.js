@@ -55,7 +55,7 @@ app.use("/api/order", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Backend Running");
+  res.send("Backend Running Successfully");
 });
 
 app.listen(3200, async () => {

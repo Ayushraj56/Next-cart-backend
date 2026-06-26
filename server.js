@@ -12,6 +12,7 @@ import cartRoutes from "./routes/cartRoutes.js";
 import addressRoutes from "./routes/addressRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import MongoStore from 'connect-mongo';
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -25,6 +26,15 @@ app.use(
     extended: true,
   })
 );
+
+app.use(session({
+  secret: process.env.JWT_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI
+  })
+}));
 
 app.use(
   cors({

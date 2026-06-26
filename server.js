@@ -20,13 +20,9 @@ const app = express();
 
 app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-
+// ✅ Only ONE session with MongoStore
 app.use(session({
   secret: process.env.JWT_SECRET,
   resave: false,
@@ -36,28 +32,15 @@ app.use(session({
   })
 }));
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:3001",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+  ],
+  credentials: true,
+}));
 
-app.use(
-  session({
-    secret: "ayush56",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-app.use(
-  "/uploads",
-  express.static(path.join(process.cwd(), "public/uploads"))
-);
+app.use("/uploads", express.static(path.join(process.cwd(), "public/uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -76,8 +59,5 @@ app.get("/", (req, res) => {
 
 app.listen(3200, async () => {
   await connectDB();
-
-  console.log(
-    "Server Running On Port 3200"
-  );
+  console.log("Server Running On Port 3200");
 });

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const uri = process.env.MONGO_URI || "mongodb+srv://ay065:ayushragh9065@ecommerce.g4fvfwx.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGO_URI;
 
 let client;
 let db;

@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import session from "express-session";
 import cors from "cors";
@@ -12,9 +15,7 @@ import cartRoutes from "./routes/cartRoutes.js";
 import addressRoutes from "./routes/addressRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
-import MongoStore from 'connect-mongo';
-import dotenv from "dotenv";
-dotenv.config();
+import MongoStore from "connect-mongo";
 
 const app = express();
 
@@ -22,24 +23,27 @@ app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Only ONE session with MongoStore
-app.use(session({
-  secret: process.env.JWT_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+    }),
   })
-}));
+);
 
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://next-cart-frontend.vercel.app",
-  ],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://next-cart-frontend.vercel.app",
+    ],
+    credentials: true,
+  })
+);
 
 app.use("/uploads", express.static(path.join(process.cwd(), "public/uploads")));
 
@@ -58,7 +62,8 @@ app.get("/", (req, res) => {
   res.send("Backend Running Successfully");
 });
 
-app.listen(3200, async () => {
-  await connectDB();
-  console.log("Server Running On Port 3200");
+connectDB().then(() => {
+  app.listen(3200, () => {
+    console.log("Server Running On Port 3200");
+  });
 });

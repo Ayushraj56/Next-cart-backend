@@ -51,7 +51,7 @@ export const createPaymentLink = async (req, res) => {
             amount: total * 100,
             currency: "INR",
             description: "GoCart Order Payment",
-            callback_url: "http://localhost:3000/payment-success",
+            callback_url: `${process.env.FRONTEND_URL}/payment-success`,
             callback_method: "get",
             customer: {
                 name: user.name,

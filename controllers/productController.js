@@ -4,7 +4,10 @@ import path from "path";
 import mongoose from "mongoose";
 import Cart from "../models/cart.js";
 
-const deleteImage = (filename) => {
+const deleteImage = (imageUrl) => {
+  if (!imageUrl) return;
+
+  const filename = imageUrl.split("/uploads/")[1];
   if (!filename) return;
 
   const filePath = path.join("public", "uploads", filename);
@@ -21,7 +24,11 @@ export const createProduct = async (req, res) => {
   try {
     const { name, price, categoryId, brandId, description } = req.body;
 
-    const images = req.files ? req.files.map((file) => file.filename) : [];
+    const images = req.files
+      ? req.files.map(
+          (file) => `${process.env.BACKEND_URL}/uploads/${file.filename}`
+        )
+      : [];
 
     const product = await Product.create({
       name,
@@ -43,7 +50,6 @@ export const createProduct = async (req, res) => {
   }
 };
 
-
 // GET PRODUCTS
 export const getProducts = async (req, res) => {
   try {
@@ -58,7 +64,6 @@ export const getProducts = async (req, res) => {
         sortBy === "price-desc" ? { price: -1, _id: 1 } :
           { createdAt: -1, _id: 1 };
 
-    // Single match stage for both count and aggregate
     const matchStage = {};
 
     if (categoryId) {
@@ -79,7 +84,6 @@ export const getProducts = async (req, res) => {
       matchStage.name = { $regex: search, $options: "i" };
     }
 
-    // Use aggregate for count too (consistent with matchStage)
     const totalProducts = await Product.countDocuments(matchStage);
 
     const products = await Product.aggregate([
@@ -186,7 +190,9 @@ export const updateProduct = async (req, res) => {
       if (product.images) {
         product.images.forEach((img) => deleteImage(img));
       }
-      updateData.images = req.files.map((file) => file.filename);
+      updateData.images = req.files.map(
+        (file) => `${process.env.BACKEND_URL}/uploads/${file.filename}`
+      );
     }
 
     const updated = await Product.findByIdAndUpdate(req.params.id, updateData, {

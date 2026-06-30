@@ -18,6 +18,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import MongoStore from "connect-mongo";
 
 const app = express();
+app.set('trust proxy', 1);
 
 app.use("/api/payment/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());

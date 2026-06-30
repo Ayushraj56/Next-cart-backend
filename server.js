@@ -40,6 +40,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "https://next-cart-frontend.vercel.app",
+      "https://next-cart-dashboard.vercel.app",
     ],
     credentials: true,
   })

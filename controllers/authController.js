@@ -75,7 +75,6 @@ export const login = async (req, res) => {
         });
       }
 
-      // console.log("LOGIN SESSION:", req.session);
 
       res.json({
         success: true,
